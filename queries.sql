@@ -7,6 +7,21 @@ CREATE TABLE authors (
   image varchar(255)
 );
 
+CREATE TABLE estudiante (
+    id_estudiante serial NOT NULL PRIMARY KEY,
+    nombre varchar(45) NOT NULL,
+    email varchar(100) NOT NULL UNIQUE,
+    FOREIGN KEY (id_promo) REFERENCES promociones(id_promocion)
+);
+
+CREATE TABLE profesor (
+    claustro_id serial NOT NULL PRIMARY KEY,
+    rol varchar(45) NOT NULL,
+    vertical varchar(45) NOT NULL,
+    modalidad varchar(45) NOT NULL,
+    
+);
+
 -- Crear tabla entries
 CREATE TABLE entries (
   id_entry serial NOT NULL PRIMARY KEY, 

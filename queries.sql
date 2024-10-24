@@ -1,77 +1,97 @@
--- Crear tabla authors
-CREATE TABLE authors (
-  id_author serial NOT NULL PRIMARY KEY, 
-  name varchar(45) NOT NULL, 
-  surname varchar(45) NOT NULL, 
-  email varchar(100) NOT NULL UNIQUE,
-  image varchar(255)
+-- CREACIÓN DE TABLAS
+--Tabla de Proyectos 
+CREATE TABLE Proyectos (
+    id_proyecto SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE estudiante (
-    id_estudiante serial NOT NULL PRIMARY KEY,
-    nombre varchar(45) NOT NULL,
-    email varchar(100) NOT NULL UNIQUE,
-    FOREIGN KEY (id_promo) REFERENCES promociones(id_promocion)
+--Tabla de claustro 
+CREATE TABLE Claustro (
+    id_claustro SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    rol VARCHAR(50) NOT NULL,
+    modalidad VARCHAR(50) NOT NULL,
+	id_vertical INT NOT NULL,
+	FOREIGN KEY (id_vertical) REFERENCES vertical(id_vertical)
 );
 
-CREATE TABLE profesor (
-    claustro_id serial NOT NULL PRIMARY KEY,
-    rol varchar(45) NOT NULL,
-    vertical varchar(45) NOT NULL,
-    modalidad varchar(45) NOT NULL,
-    
+-- Tabla de promociones 
+CREATE TABLE Promociones (
+    id_promocion SERIAL PRIMARY KEY,
+    fecha_comienzo DATE,
+    campus VARCHAR(100) NOT NULL
 );
 
--- Crear tabla entries
-CREATE TABLE entries (
-  id_entry serial NOT NULL PRIMARY KEY, 
-  title varchar(100) NOT NULL, 
-  content text NOT NULL, 
-  date date DEFAULT CURRENT_DATE,
-  id_author int,
-  category varchar(15),
-  FOREIGN KEY (id_author) REFERENCES authors(id_author)
+--Tabla de curso 
+CREATE TABLE Curso (
+	id_claustro INT NOT NULL,
+	id_promocion INT NOT NULL,
+	FOREIGN KEY (id_claustro) REFERENCES Claustro(id_claustro),
+	FOREIGN KEY (id_promocion) REFERENCES Promociones(id_promocion)
 );
 
--- Insertar datos en tabla authors
-INSERT INTO authors(name,surname,email,image)
-VALUES
-('Alejandru','Regex','alejandru@thebridgeschool.es','https://randomuser.me/api/portraits/thumb/men/75.jpg'),
-('Birja','Rivera','birja@thebridgeschool.es','https://randomuser.me/api/portraits/thumb/men/60.jpg'),
-('Alvaru','Riveru','alvaru@thebridgeschool.es','https://randomuser.me/api/portraits/thumb/men/45.jpg'),
-('Muchelle','Wuallus','muchelle@thebridgeschool.es','https://randomuser.me/api/portraits/thumb/women/72.jpg'),
-('Albertu','Henriques','albertu@thebridgeschool.es','https://randomuser.me/api/portraits/thumb/men/33.jpg'),
-('Guillermu','Develaweyer','guillermu@thebridgeschool.es','https://randomuser.me/api/portraits/thumb/men/34.jpg'),
-('Jabier','Hespinoza','jabier@thebridgeschool.es','https://randomuser.me/api/portraits/thumb/men/35.jpg');
+
+--Tabla de Alumnos 
+CREATE TABLE Alumnos (
+    id_alumno SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+	id_promocion INT NOT NULL,
+	FOREIGN KEY (id_promocion) REFERENCES Promociones(id_promocion),
+	id_vertical INT NOT NULL,
+	FOREIGN KEY (id_vertical) REFERENCES vertical(id_vertical)
+);
 
 
+-- Tabla de calificacion 
+CREATE TABLE Calificacion (
+    id_alumno INT NOT NULL,
+    id_proyecto INT NOT NULL,
+    nota VARCHAR(10),
+    PRIMARY KEY (id_alumno, id_proyecto),
+    FOREIGN KEY (id_alumno) REFERENCES Alumnos(id_alumno),
+    FOREIGN KEY (id_proyecto) REFERENCES Proyectos(id_proyecto)
+);
 
--- Insertar datos en tabla entries
-INSERT INTO entries(title,content,id_author,category)
-VALUES 
-('Noticia: SOL en Madrid','Contenido noticia 1',(SELECT id_author FROM authors WHERE email='alejandru@thebridgeschool.es'),'Tiempo'),
-('Noticia: Un panda suelto por la ciudad','El panda se comió todas las frutas de una tienda',(SELECT id_author FROM authors WHERE email='birja@thebridgeschool.es'),'Sucesos'),
-('El rayo gana la champions','Victoria por goleada en la final de la champions',(SELECT id_author FROM authors WHERE email='albertu@thebridgeschool.es'),'Deportes'),
-('Amanece Madrid lleno de arena','La calima satura Madrid de arena. Pérdidas millonarias',(SELECT id_author FROM authors WHERE email='birja@thebridgeschool.es'),'Sucesos'),
-('Descubren el motor de agua','Fin de la gasolina. A partir de ahora usaremos agua en nuestros coches',(SELECT id_author FROM authors WHERE email='alvaru@thebridgeschool.es'),'Ciencia');
+--Tabla de Vertical 
+CREATE TABLE Vertical (
+    id_vertical SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
 
--- Buscar entries por email usuario
-SELECT * FROM entries WHERE id_author=(SELECT id_author FROM authors WHERE email='alejandru@thebridgeschool.es');
-
-
--- Buscar datos por email de usuario y cruzar datos
-SELECT e.title,e.content,e.date,e.category,a.name,a.surname,a.image
-FROM entries AS e
-INNER JOIN authors AS a
-ON e.id_author=a.id_author
-WHERE a.email='alejandru@thebridgeschool.es'
-ORDER BY e.title;
+-- INSERCIÓN DE DATOS
 
 
--- Buscar datos por email de 2 usuarios y cruzar datos
-SELECT entries.title,entries.content,entries.date,entries.category,authors.name,authors.surname,authors.image
-FROM entries
-INNER JOIN authors
-ON entries.id_author=authors.id_author
-WHERE authors.email='alejandru@thebridgeschool.es' OR authors.email='alvaru@thebridgeschool.es' OR authors.email='albertu@thebridgeschool.es'
-ORDER BY entries.title;
+-- QUERIES
+-- Cuántos alumnos tiene cada promoción
+SELECT p.*,COUNT(DISTINCT a.id_alumno) AS Num_Alumnos
+FROM alumnos AS a
+INNER JOIN promociones as p
+ON a.id_promocion = p.id_promocion
+INNER JOIN curso as cur
+ON a.id_promocion = cur.id_promocion
+INNER JOIN vertical as v
+ON v.id_vertical = a.id_vertical
+GROUP BY 1
+ORDER BY 1
+
+-- Calificaciones de los proyectos del alumno "Jorge Manzanares"
+SELECT a.nombre AS Nombre_Alumno, p.nombre AS Proyecto, cal.nota AS Nota
+FROM calificacion AS cal
+INNER JOIN proyectos AS p
+ON cal.id_proyecto = p.id_proyecto
+INNER JOIN alumnos AS a
+ON cal.id_alumno = a.id_alumno
+WHERE a.nombre = 'Jorge Manzanares';
+
+-- Nº de profesores por vertical en el campus de Madrid
+SELECT DISTINCT COUNT(cla.nombre) AS Num_Profesores, v.nombre AS Nombre_Vertical, p.campus 
+FROM promociones as p
+INNER JOIN curso as cur
+ON p.id_promocion = cur.id_promocion
+INNER JOIN claustro as cla
+ON cur.id_claustro = cla.id_claustro
+INNER JOIN vertical as v
+ON cla.id_vertical = v.id_vertical
+WHERE p.campus = 'Madrid'
+GROUP BY p.campus, v.nombre

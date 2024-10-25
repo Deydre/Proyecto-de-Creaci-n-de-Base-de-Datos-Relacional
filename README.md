@@ -12,6 +12,11 @@ El proyecto es parte de los estudios de los estudiantes del programa Fullstack y
 - **Juan Jose Ruiperez** (Estudiante de Fullstack)
 - **Deydre Alonso** (Estudiante de Fullstack)
 
+## Diagrama de E/R
+![Diagrama de E/R](/media/diagramaER.png)
+
+## Modelo de E/R
+![Modelo de E/R](/media/modeloER.jpeg)
 
 ## 🔍 Funcionalidades
 - Diseño de la base de datos utilizando principios de normalización (3FN).

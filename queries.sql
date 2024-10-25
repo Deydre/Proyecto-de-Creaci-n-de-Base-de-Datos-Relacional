@@ -582,12 +582,17 @@ ON v.id_vertical = a.id_vertical
 GROUP BY 1
 ORDER BY 1
 
--- Cuántos alumnos tiene cada profesor
-SELECT cla.nombre, cla.rol,COUNT(DISTINCT a.id_alumno) AS cantidad_estudiantes 
-FROM claustro AS cla 
-INNER JOIN alumnos AS a
-ON cla.id_vertical = a.id_vertical 
-GROUP BY cla.nombre, cla.rol
+-- Notas de los alumnos de DS en el proyecto "Proyecto_BBDD"
+SELECT a.nombre AS Nombre_Alumno, v.nombre AS Nombre_Curso, p.nombre AS Nombre_Proyecto, cal.nota
+FROM alumnos as a
+INNER JOIN calificacion as cal
+ON a.id_alumno = cal.id_alumno
+INNER JOIN proyectos AS p
+ON cal.id_proyecto = p.id_proyecto
+INNER JOIN vertical AS v
+ON a.id_vertical = v.id_vertical
+WHERE p.nombre LIKE 'Proyecto_BBDD'
+
 
 -- Buscar estudiantes de FS en Madrid
 SELECT DISTINCT a.nombre, v.nombre 

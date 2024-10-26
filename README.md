@@ -12,11 +12,12 @@ El proyecto es parte de los estudios de los estudiantes del programa Fullstack y
 - **Juan Jose Ruiperez** (Estudiante de Fullstack)
 - **Deydre Alonso** (Estudiante de Fullstack)
 
-## Diagrama de E/R
-![Diagrama de E/R](/media/diagramaER.png)
+## 🎨 Modelo E/R
+![Modelo E/R](/media/modeloER.jpg)
 
-## Modelo de E/R
-![Modelo de E/R](/media/modeloER.jpeg)
+## 🎨 Diagrama E/R
+![Diagrama E/R](/media/diagramaER.png)
+
 
 ## 🔍 Funcionalidades
 - Diseño de la base de datos utilizando principios de normalización (3FN).
@@ -30,17 +31,6 @@ El proyecto es parte de los estudios de los estudiantes del programa Fullstack y
 - Tener instalado **PostgreSQL** o cualquier otro sistema de gestión de bases de datos relacional compatible.
 - Conocimiento básico de SQL.
 - Editor de texto o IDE para ejecutar las consultas y scripts SQL.
-
-## 🛠️ Instalación
-1. Clona el repositorio del proyecto:
-    ```bash
-    git clone https://github.com/MNievas12/2409_sql_thebridge.git
-    ```
-2. Accede al directorio del proyecto:
-    ```bash
-    cd 2409_sql_thebridge/Practica/4-Proyecto
-    ```
-3. Importa el archivo SQL al sistema de gestión de bases de datos.
 
 ## 🔧 Uso
 Una vez que la base de datos esté configurada e instalada, puedes interactuar con ella mediante consultas SQL. Algunos ejemplos de uso incluyen:
